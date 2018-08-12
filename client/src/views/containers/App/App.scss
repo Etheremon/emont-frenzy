@@ -1,0 +1,25 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/colors';
+@import url('https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700');
+@import url('https://fonts.googleapis.com/css?family=Muli:400,400i,600,600i,700,700i');
+
+body {
+  font-family: 'Muli', sans-serif;
+  font-weight: $font-weight-normal;
+  font-size: $font-size-normal !important;
+  min-height: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+#root {
+  position: relative;
+  min-height: 100%;
+  overflow-x: hidden;
+
+  .page-wrapper {
+
+  }
+}
