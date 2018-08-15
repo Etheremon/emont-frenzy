@@ -1,0 +1,17 @@
+{
+  "_tag": "moveFish",
+  "_amount": "0",
+  "_sender" : "0x1234567890123456789012345678901234567890",
+  "params": [
+    {
+      "vname": "new_fish_x",
+      "type": "Int32",
+      "value": "10"
+    },
+    {
+      "vname": "new_fish_y",
+      "type": "Int32",
+      "value": "0"
+    }
+  ]
+}

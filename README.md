@@ -8,3 +8,6 @@
 - Add frontend code
 - Add first version of Scillia contract 
 
+### Changelog 15/08/2018
+
+- Update contract for buy and move fish

@@ -39,13 +39,24 @@ let gte =
         | True => False
         end
 
+let lte =
+    fun (a : Int32) =>
+    fun (b : Int32) =>
+        let lt_res = builtin lt a b in
+        match lt_res with
+        | False =>
+            let eq_res = builtin eq a b in
+            eq_res
+        | True => True
+        end
+
 let abs_int =
     fun (a : Int32) =>
         let a_sign = gte a const_zero in
         match a_sign with
         | True => a
         | False =>
-            let minus_a = builtin mul minus_a a in
+            let minus_a = builtin mul const_minus a in
             minus_a
         end
 
@@ -73,6 +84,7 @@ let get_max_int =
         | False => a
         end
 
+
 (* frenzy methods *)
 
 let get_max_move =
@@ -80,30 +92,45 @@ let get_max_move =
         let const_10 = Int32 10 in
         let const_20 = Int32 20 in
         let const_30 = Int32 30 in
-        let const_5 = Int32 5 in
+        let const_25 = Int32 25 in
+        let const_16 = Int32 16 in
+        let const_9 = Int32 9 in
         let const_4 = Int32 4 in
-        let const_3 = Int32 3 in
-        let const_2 = Int32 2 in
         let lt_10 = builtin lt weight const_10 in
         let lt_20 = builtin lt weight const_20 in
         let lt_30 = builtin lt weight const_30 in
         match lt_10 with
-        | True => const_5
+        | True => const_25
         | False =>
             match lt_20 with
-            | True => const_4
+            | True => const_16
             | False =>
                 match lt_30 with
-                | True => const_3
+                | True => const_9
                 | False => const_2
                 end
             end
         end
 
+let in_border =
+    fun (border_x : Int32) =>
+    fun (border_y : Int32) =>
+    fun (x : Int32) =>
+    fun (y : Int32) =>
+        let x_lt_bx = builtin lt x border_x in
+        let x_gte_0 = gte x const_zero in
+        let x_good = logic_and x_lt_bx x_gte_0 in
+
+        let y_lt_by = builtin lt y border_y in
+        let y_gte_0 = gte y const_zero in
+        let y_good = logic_and y_lt_by y_gte_0 in
+
+        let good = logic_and x_good y_good in
+        good
 
 (* default values *)
-let default_ocean_size = Int32 30
-let default_fish_price = Int32 5
+let default_ocean_size = Int32 20
+let default_fish_price = Uint128 5
 let default_fish_weight = Int32 5
 let default_fish_pos_x = Int32 10
 let default_fish_pos_y = Int32 5
@@ -128,30 +155,35 @@ contract EmontFrenzy
 (owner: Address)
 
 field __ocean_size : Int32 = default_ocean_size
-field __fish_price : Int128 = default_fish_price
+field __fish_price : Uint128 = default_fish_price
 
 (* Fish struct, to be refactor *)
-field __total_fish_no : Int32 = const_one
+field __total_fish_no : Int32 = const_zero
 field __fish_to_player : Map Int32 Address = Emp Int32 Address
 field __player_to_fish : Map Address Int32 = Emp Address Int32
 field __fish_to_weight: Map Int32 Int32 = Emp Int32 Int32
-field __fish_to_pos_x: Map Int32 Int32 = Emp Int32 Int32
-field __fish_to_pos_y: Map Int32 Int32 = Emp Int32 Int32
+field __fish_to_posx: Map Int32 Int32 = Emp Int32 Int32
+field __fish_to_posy: Map Int32 Int32 = Emp Int32 Int32
+
+(* debugger *)
+field __error_count : Int32 = const_zero
+field __valid_amount : Bool = False
+field __call_count : Int32 = const_zero
 
 
 transition setOceanSize (new_ocean_size : Int32)
-  is_owner = builtin eq owner _sender;
-  match is_owner with
-  | False =>
-    msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : not_owner_code};
-    msgs = one_msg msg;
-    send msgs
-  | True =>
-    __total_fish_no := new_ocean_size;
-    msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : set_ocean_size};
-    msgs = one_msg msg;
-    send msgs
-  end
+    is_owner = builtin eq owner _sender;
+    match is_owner with
+    | False =>
+        msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : not_owner_code};
+        msgs = one_msg msg;
+        send msgs
+    | True =>
+        __ocean_size := new_ocean_size;
+        msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : set_ocean_size};
+        msgs = one_msg msg;
+        send msgs
+    end
 end
 
 
@@ -171,23 +203,44 @@ transition setFishPrice (new_fish_price : Int128)
 end
 
 transition buyFish ()
-    is_valid_amount = builtin eq _amount __fish_price;
+    fish_price <- __fish_price;
+    is_valid_amount = builtin eq _amount fish_price;
+
     match is_valid_amount with
     | False =>
+        error_count <- __error_count;
+        temp = builtin add error_count const_one;
+        __error_count := temp;
         msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : invalid_amount};
         msgs = one_msg msg;
         send msgs
     | True =>
-        new_total_fish_no = builtin add __total_fish_no const_one;
+        accept;
+
+        total_fish_no <- __total_fish_no;
+        new_total_fish_no = builtin add total_fish_no const_one;
         __total_fish_no := new_total_fish_no;
-        new_fish_to_player = builtin put __fish_to_player new_total_fish_no _sender;
-        __fish_to_player := new_fish_to_player;
-        new_fish_to_weight = builtin put __fish_to_weight new_total_fish_no default_fish_weight;
-        __fish_to_weight := new_fish_to_weight;
-        new_fish_to_posx = builtin put __fish_to_weight new_total_fish_no default_fish_pos_x;
-        __fish_to_pos_x := new_fish_to_pos_x;
-        new_fish_to_posy = builtin put __fish_to_weight new_total_fish_no default_fish_pos_y;
-        __fish_to_pos_y := new_fish_to_pos_y;
+
+        fish_to_player <- __fish_to_player;
+        fish_to_player = builtin put fish_to_player new_total_fish_no _sender;
+        __fish_to_player := fish_to_player;
+
+        fish_to_weight <- __fish_to_weight;
+        fish_to_weight = builtin put fish_to_weight new_total_fish_no default_fish_weight;
+        __fish_to_weight := fish_to_weight;
+
+        fish_to_posx <- __fish_to_posx;
+        fish_to_posx = builtin put fish_to_posx new_total_fish_no default_fish_pos_x;
+        __fish_to_posx := fish_to_posx;
+
+        fish_to_posy <- __fish_to_posy;
+        fish_to_posy = builtin put fish_to_posy new_total_fish_no default_fish_pos_y;
+        __fish_to_posy := fish_to_posy;
+
+        player_to_fish <- __player_to_fish;
+        player_to_fish = builtin put player_to_fish _sender new_total_fish_no;
+        __player_to_fish := player_to_fish;
+
         msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : buy_fish};
         msgs = one_msg msg;
         send msgs
@@ -195,32 +248,73 @@ transition buyFish ()
 end
 
 transition moveFish (new_fish_x : Int32, new_fish_y : Int32)
-    fish_num = get __player_to_fish _sender;
+    player_to_fish <- __player_to_fish;
+    fish_num = builtin get player_to_fish _sender;
     match fish_num with
     | None =>
         msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : fish_not_exist};
         msgs = one_msg msg;
         send msgs
+
     | Some fish_num_v =>
-        fish_weight = get __fish_to_weight fish_num_v;
-        valid_move = get_max_move fish_weight;
-        fish_x = get __fish_to_pos_x fish_num_v;
-        fish_y = get __fish_to_pos_y fish_num_v;
-        diff_x = abs_sub_int fish_x new_fish_x;
-        diff_y = abs_sub_int fish_x new_fish_y;
-        max_diff = get_max_int diff_x diff_y;
-        is_valid_move = gte valid_move max_diff;
-        match is_valid_move with
-        | True =>
-            new_fish_to_pos_x = builtin put __fish_to_pos_x new_fish_x;
-            new_fish_to_pos_y = builtin put __fish_to_pos_y new_fish_y;
-            msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : move_fish};
+        fish_to_weight <- __fish_to_weight;
+        fish_weight = builtin get fish_to_weight fish_num_v;
+        match fish_weight with
+        | None =>
+            msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : fish_not_exist};
             msgs = one_msg msg;
             send msgs
-        | False =>
-            msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : invalid_move};
-            msgs = one_msg msg;
-            send msgs
+        | Some fish_weight_v =>
+            fish_to_posx <- __fish_to_posx;
+            fish_x = builtin get fish_to_posx fish_num_v;
+            match fish_x with
+            | None =>
+                msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : fish_not_exist};
+                msgs = one_msg msg;
+                send msgs
+            | Some fish_x_v =>
+                fish_to_posy <- __fish_to_posy;
+                fish_y = builtin get fish_to_posy fish_num_v;
+                match fish_y with
+                | None =>
+                    msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : fish_not_exist};
+                    msgs = one_msg msg;
+                    send msgs
+                | Some fish_y_v =>
+                    diff_x = abs_sub_int fish_x_v new_fish_x;
+                    diff_y = abs_sub_int fish_y_v new_fish_y;
+                    diff_x_sq = builtin mul diff_x diff_x;
+                    diff_y_sq = builtin mul diff_y diff_y;
+                    total_sq = builtin add diff_x_sq diff_y_sq;
+                    max_move = get_max_move fish_weight_v;
+                    max_move_sq = builtin mul max_move max_move;
+                    is_in_range = gte max_move_sq total_sq;
+
+                    ocean_size <- __ocean_size;
+                    is_in_border = in_border ocean_size ocean_size new_fish_x new_fish_y;
+
+                    is_valid_move = logic_and is_in_range is_in_border;
+
+                    match is_valid_move with
+                    | True =>
+                        fish_to_posx = builtin put fish_to_posx fish_num_v new_fish_x;
+                        __fish_to_posx := fish_to_posx;
+
+                        fish_to_posy = builtin put fish_to_posy fish_num_v new_fish_y;
+                        __fish_to_posy := fish_to_posy;
+
+                        msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : move_fish};
+                        msgs = one_msg msg;
+                        send msgs
+
+                    | False =>
+                        msg = {_tag : "Main"; _recipient : _sender; _amount : Uint128 0; code : invalid_move};
+                        msgs = one_msg msg;
+                        send msgs
+
+                    end
+                end
+            end
         end
     end
 end

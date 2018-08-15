@@ -1,0 +1,91 @@
+[
+  {
+    "vname": "_balance",
+    "type": "Uint128",
+    "value": "5"
+  },
+  {
+    "vname": "__player_to_fish",
+    "type": "Map (Address) (Int32)",
+    "value": [
+      {
+        "key": "0x1234567890123456789012345678901234567890",
+        "val": "1"
+      }
+    ]
+  },
+  {
+    "vname": "__fish_to_posy",
+    "type": "Map (Int32) (Int32)",
+    "value": [
+      {
+        "key": "1",
+        "val": "5"
+      }
+    ]
+  },
+  {
+    "vname": "__fish_to_posx",
+    "type": "Map (Int32) (Int32)",
+    "value": [
+      {
+        "key": "1",
+        "val": "10"
+      }
+    ]
+  },
+  {
+    "vname": "__fish_to_weight",
+    "type": "Map (Int32) (Int32)",
+    "value": [
+      {
+        "key": "1",
+        "val": "5"
+      }
+    ]
+  },
+  {
+    "vname": "__fish_to_player",
+    "type": "Map (Int32) (Address)",
+    "value": [
+      {
+        "key": "1",
+        "val": "0x1234567890123456789012345678901234567890"
+      }
+    ]
+  },
+  {
+    "vname": "__total_fish_no",
+    "type": "Int32",
+    "value": "1"
+  },
+  {
+    "vname": "__ocean_size",
+    "type": "Int32",
+    "value": "30"
+  },
+  {
+    "vname": "__fish_price",
+    "type": "Uint128",
+    "value": "5"
+  },
+  {
+    "vname": "__error_count",
+    "type": "Int32",
+    "value": "0"
+  },
+  {
+    "vname": "__valid_amount",
+    "type": "Bool",
+    "value": {
+      "constructor": "False",
+      "argtypes": [],
+      "arguments": []
+    }
+  },
+  {
+    "vname": "__call_count",
+    "type": "Int32",
+    "value": "0"
+  }
+]
