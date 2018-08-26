@@ -2,22 +2,83 @@
   {
     "vname": "_balance",
     "type": "Uint128",
-    "value": "5"
+    "value": "10"
+  },
+  {
+    "vname": "__pos_to_bait",
+    "type": "Map (Uint32) (Uint32)",
+    "value": [
+      {
+        "key": "7010",
+        "val": "20000"
+      },
+      {
+        "key": "7007",
+        "val": "20000"
+      },
+      {
+        "key": "8003",
+        "val": "11000"
+      }
+    ]
+  },
+  {
+    "vname": "__active_fish_no",
+    "type": "Uint32",
+    "value": "1"
+  },
+  {
+    "vname": "__pos_to_fish",
+    "type": "Map (Uint32) (Uint32)",
+    "value": [
+      {
+        "key": "8007",
+        "val": "2"
+      }
+    ]
+  },
+  {
+    "vname": "__fish_to_player",
+    "type": "Map (Uint32) (Address)",
+    "value": [
+      {
+        "key": "2",
+        "val": "0x0000000000000000000000000000000000000002"
+      }
+    ]
   },
   {
     "vname": "__player_to_fish",
-    "type": "Map (Address) (Int32)",
+    "type": "Map (Address) (Uint32)",
     "value": [
       {
-        "key": "0x1234567890123456789012345678901234567890",
-        "val": "1"
+        "key": "0x0000000000000000000000000000000000000002",
+        "val": "2"
+      }
+    ]
+  },
+  {
+    "vname": "__fish_to_weight",
+    "type": "Map (Uint32) (Uint32)",
+    "value": [
+      {
+        "key": "2",
+        "val": "10000"
+      },
+      {
+        "key": "1",
+        "val": "20000"
       }
     ]
   },
   {
     "vname": "__fish_to_posy",
-    "type": "Map (Int32) (Int32)",
+    "type": "Map (Uint32) (Uint32)",
     "value": [
+      {
+        "key": "2",
+        "val": "7"
+      },
       {
         "key": "1",
         "val": "5"
@@ -26,43 +87,27 @@
   },
   {
     "vname": "__fish_to_posx",
-    "type": "Map (Int32) (Int32)",
+    "type": "Map (Uint32) (Uint32)",
     "value": [
       {
-        "key": "1",
-        "val": "10"
-      }
-    ]
-  },
-  {
-    "vname": "__fish_to_weight",
-    "type": "Map (Int32) (Int32)",
-    "value": [
+        "key": "2",
+        "val": "8"
+      },
       {
         "key": "1",
-        "val": "5"
-      }
-    ]
-  },
-  {
-    "vname": "__fish_to_player",
-    "type": "Map (Int32) (Address)",
-    "value": [
-      {
-        "key": "1",
-        "val": "0x1234567890123456789012345678901234567890"
+        "val": "7"
       }
     ]
   },
   {
     "vname": "__total_fish_no",
-    "type": "Int32",
-    "value": "1"
+    "type": "Uint32",
+    "value": "2"
   },
   {
     "vname": "__ocean_size",
-    "type": "Int32",
-    "value": "30"
+    "type": "Uint32",
+    "value": "20"
   },
   {
     "vname": "__fish_price",
@@ -71,7 +116,7 @@
   },
   {
     "vname": "__error_count",
-    "type": "Int32",
+    "type": "Uint32",
     "value": "0"
   },
   {
@@ -85,7 +130,48 @@
   },
   {
     "vname": "__call_count",
-    "type": "Int32",
+    "type": "Uint32",
     "value": "0"
+  },
+  {
+    "vname": "__fold_res",
+    "type": "Uint32",
+    "value": "0"
+  },
+  {
+    "vname": "__test_list",
+    "type": "List (Uint32)",
+    "value": {
+      "constructor": "Nil",
+      "argtypes": [
+        "Uint32"
+      ],
+      "arguments": []
+    }
+  },
+  {
+    "vname": "__empty_count",
+    "type": "Uint32",
+    "value": "0"
+  },
+  {
+    "vname": "__test_result",
+    "type": "Uint32",
+    "value": "0"
+  },
+  {
+    "vname": "__random_cell",
+    "type": "Pair (Uint32) (Uint32)",
+    "value": {
+      "constructor": "Pair",
+      "argtypes": [
+        "Uint32",
+        "Uint32"
+      ],
+      "arguments": [
+        "0",
+        "0"
+      ]
+    }
   }
 ]

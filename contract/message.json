@@ -1,17 +1,65 @@
 {
   "_tag": "moveFish",
-  "_amount": "0",
-  "_sender" : "0x1234567890123456789012345678901234567890",
+  "_amount": "5",
+  "_sender" : "0x0000000000000000000000000000000000000001",
   "params": [
     {
       "vname": "new_fish_x",
-      "type": "Int32",
-      "value": "10"
+      "type": "Uint32",
+      "value": "8"
     },
     {
       "vname": "new_fish_y",
-      "type": "Int32",
-      "value": "0"
+      "type": "Uint32",
+      "value": "7"
+    },
+    {
+      "vname": "seed",
+      "type": "Uint32",
+      "value": "24"
     }
   ]
 }
+
+//Fish 2
+//{
+//  "_tag": "buyFish",
+//  "_amount": "5",
+//  "_sender" : "0x0000000000000000000000000000000000000002",
+//  "params": [
+//    {
+//      "vname": "seed",
+//      "type": "Uint32",
+//      "value": "33"
+//    }
+//  ]
+//}
+
+
+// Set bait
+//{
+//  "_tag": "setBait",
+//  "_amount": "0",
+//  "_sender" : "0x1234567890123456789012345678901234567890",
+//  "params": [
+//    {
+//      "vname": "seed",
+//      "type": "Uint32",
+//      "value": "57"
+//    },
+//    {
+//      "vname": "bait_size",
+//      "type": "Uint32",
+//      "value": "11"
+//    }
+//  ]
+//}
+
+//Buy fish 1
+//{
+//  "_tag": "buyFish",
+//  "_amount": "5",
+//  "_sender" : "0x0000000000000000000000000000000000000001",
+//  "params": [
+//  ]
+//}
