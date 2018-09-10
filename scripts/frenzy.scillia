@@ -377,7 +377,7 @@ let get_reduced_fish_size =
 (*    - [] Handle ocean resize*)
 
 contract EmontFrenzy
-(owner: Address)
+(owner: ByStr20)
 
 field __ocean_size : Uint128 = default_ocean_size
 field __fish_price : Uint128 = default_fish_price
@@ -386,8 +386,8 @@ field __fish_price : Uint128 = default_fish_price
 field __total_fish_no : Uint128 = const_zero
 field __active_fish_no : Uint128 = const_zero
 field __acc_bait_size : Uint128 = const_zero
-field __fish_to_player : Map Uint128 Address = Emp Uint128 Address
-field __player_to_fish : Map Address Uint128 = Emp Address Uint128
+field __fish_to_player : Map Uint128 ByStr20 = Emp Uint128 ByStr20
+field __player_to_fish : Map ByStr20 Uint128 = Emp ByStr20 Uint128
 field __fish_to_weight: Map Uint128 Uint128 = Emp Uint128 Uint128
 field __fish_to_posx: Map Uint128 Uint128 = Emp Uint128 Uint128
 field __fish_to_posy: Map Uint128 Uint128 = Emp Uint128 Uint128
