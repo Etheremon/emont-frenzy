@@ -43,3 +43,13 @@ node.getSmartContractState({ address: contractAddr }, (err, data) => {
     console.log(JSON.stringify(data, 2, null));
   }
 });
+
+function getContractState(contractAddr, callback) {
+  node.getSmartContractState({ address: contractAddr }, (err, data) => {
+    if (err || (data.result && data.result.Error)) {
+      console.log(err);
+    } else {
+      callback(JSON.stringify(data, 2, null));
+    }
+  });
+}
