@@ -31,7 +31,7 @@ const zilliqa = new Zilliqa({
 console.log('Zilliqa Testing Script');
 const node = zilliqa.getNode();
 
-let contractAddr;
+let contractAddr = "cef48d2ec4086bd5799b659261948daab02b760d";
 if (argv.contract) {
     contractAddr = argv.contract;
 }
