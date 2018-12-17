@@ -44,7 +44,7 @@ node.getSmartContractState({ address: contractAddr }, (err, data) => {
   }
 });
 
-function getContractState(contractAddr, callback) {
+modules.exports.getContractState = function getContractState(contractAddr, callback) {
   node.getSmartContractState({ address: contractAddr }, (err, data) => {
     if (err || (data.result && data.result.Error)) {
       console.log(err);

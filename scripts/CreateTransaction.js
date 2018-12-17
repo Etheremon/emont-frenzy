@@ -90,7 +90,7 @@ if (argv.test) {
   }
 }
 
-function setFishPrice(price, pk, to) {
+module.exports.setFishPrice = function setFishPrice(price, pk, to) {
   const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
   const msg = {
     _tag: "setFishPrice",
@@ -108,7 +108,7 @@ function setFishPrice(price, pk, to) {
   sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
-function setOceanSize(oceanSize, pk, to) {
+module.exports.setOceanSize = function setOceanSize(oceanSize, pk, to) {
   const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
   const msg = {
     _tag: "setOceanSize",
@@ -128,7 +128,7 @@ function setOceanSize(oceanSize, pk, to) {
 
 let RANDOM_SEED = 1011;
 
-function setBait(random_seed, bait_size, pk, to) { // TODO: remove random_seed because BHash is unavailable
+module.exports.setBait = function setBait(random_seed, bait_size, pk, to) { // TODO: remove random_seed because BHash is unavailable
   const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
   const msg = {
     _tag: "setBait",
@@ -151,7 +151,7 @@ function setBait(random_seed, bait_size, pk, to) { // TODO: remove random_seed b
   sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
-function buyFish(random_seed, fish_price, pk, to) { // TODO: remove random_seed because BHash is unavailable
+module.exports.buyFish = function buyFish(random_seed, fish_price, pk, to) { // TODO: remove random_seed because BHash is unavailable
   const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
   const msg = {
     _tag: "setBait",
@@ -169,7 +169,7 @@ function buyFish(random_seed, fish_price, pk, to) { // TODO: remove random_seed 
   sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
-function moveFish(new_fish_x, new_fish_y, random_seed, pk, to) { // TODO: remove random_seed because BHash is
+module.exports.moveFish = function moveFish(new_fish_x, new_fish_y, random_seed, pk, to) { // TODO: remove random_seed because BHash is
   const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);unavailable
   const msg = {
     _tag: "setBait",
@@ -202,6 +202,6 @@ function getRandom() {
 }
 
 // Example call
-setFishPrice(25, privateKey, recipient);
+// setFishPrice(25, privateKey, recipient);
 // setBait(getRandom(), 10, privateKey, recipient);
 
