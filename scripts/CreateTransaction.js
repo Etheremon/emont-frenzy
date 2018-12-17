@@ -9,11 +9,11 @@ const zilliqa = new Zilliqa({
   nodeUrl: url,
 });
 
-const makeTxnDetails = (nonceVal, msg) => {
+const makeTxnDetails = (nonceVal, msg, toAddr) => {
     txnDetails = {
         version: 0,
         nonce: nonceVal,
-        to: recipient,
+        to: toAddr,
         amount: new BN(0),
         gasPrice: 1,
         gasLimit: 50000,
@@ -39,14 +39,14 @@ const getNonceAsync = addr => {
 *   Main Logic
 */
 
-function sendZilliqaTransaction(senderAddr, msg, privateKey) {
+function sendZilliqaTransaction(senderAddr, msg, privateKey, toAddr) {
 // Get user's nonce and increment it by one before sending transaction
   getNonceAsync(senderAddr)
     .then(nonce => {
       console.log(`User's current nonce: ${nonce}`);
       const nonceVal = nonce + 1;
       console.log(`Payload's Nonce is ${nonceVal}`);
-      const xnDetails = makeTxnDetails(nonceVal, msg);
+      const xnDetails = makeTxnDetails(nonceVal, msg, toAddr);
       const txn = zilliqa.util.createTransactionJson(privateKey, txnDetails);
       zilliqa.node.createTransaction(txn, (err, data) => {
           if (err || data.error) {
@@ -86,8 +86,6 @@ if (argv.test) {
   recipient = argv.to;
 }
 
-const senderAddr = zilliqa.util.getAddressFromPrivateKey(privateKey);
-
 function setFishPrice(price, pk, to) {
   const msg = {
     _tag: "setFishPrice",
@@ -101,8 +99,9 @@ function setFishPrice(price, pk, to) {
       },
     ],
   };
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
-  sendZilliqaTransaction(to, msg, pk);
+  sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
 function setOceanSize(oceanSize, pk, to) {
@@ -118,8 +117,9 @@ function setOceanSize(oceanSize, pk, to) {
       },
     ],
   };
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
-  sendZilliqaTransaction(to, msg, pk);
+  sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
 let RANDOM_SEED = 1011;
@@ -142,8 +142,9 @@ function setBait(random_seed, bait_size, pk, to) { // TODO: remove random_seed b
       },
     ],
   };
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
-  sendZilliqaTransaction(to, msg, pk);
+  sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
 function buyFish(random_seed, fish_price, pk, to) { // TODO: remove random_seed because BHash is unavailable
@@ -159,8 +160,9 @@ function buyFish(random_seed, fish_price, pk, to) { // TODO: remove random_seed 
       }
     ],
   };
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
-  sendZilliqaTransaction(to, msg, pk);
+  sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
 function moveFish(new_fish_x, new_fish_y, random_seed, pk, to) { // TODO: remove random_seed because BHash is unavailable
@@ -186,8 +188,9 @@ function moveFish(new_fish_x, new_fish_y, random_seed, pk, to) { // TODO: remove
       },
     ],
   };
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
-  sendZilliqaTransaction(to, msg, pk);
+  sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
 function getRandom() {
@@ -195,6 +198,6 @@ function getRandom() {
 }
 
 // Example call
-// setFishPrice(25, privateKey, recipient);
-setBait(getRandom(), 10, privateKey, recipient);
+setFishPrice(25, privateKey, recipient);
+// setBait(getRandom(), 10, privateKey, recipient);
 
