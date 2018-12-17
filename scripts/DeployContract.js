@@ -48,8 +48,9 @@ if (argv.test) {
     privateKey = argv.key;
     console.log(`Your Private Key: ${privateKey} \n`);
   } else {
-    console.log("No private key given! Generating random privatekey.");
-    privateKey = zilliqa.util.generatePrivateKey();
+    console.log("No private key given! Using default key.");
+    // privateKey = zilliqa.util.generatePrivateKey();
+    privateKey = "db11cfa086b92497c8ed5a4cc6edb3a5bfe3a640c43ffb9fc6aa0873c56f2ee3";
     console.info(`Your Private Key: ${privateKey.toString("hex")}`);
   }
 }
