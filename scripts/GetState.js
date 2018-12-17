@@ -40,6 +40,6 @@ node.getSmartContractState({ address: contractAddr }, (err, data) => {
   if (err || (data.result && data.result.Error)) {
     console.log(err);
   } else {
-    console.log(JSON.stringify(data, 2, nulls));
+    console.log(JSON.stringify(data, 2, null));
   }
 });
