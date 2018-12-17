@@ -85,7 +85,9 @@ if (argv.test) {
     recipient = "cef48d2ec4086bd5799b659261948daab02b760d";
     // process.exit(0);
   }
-  recipient = argv.to;
+  else {
+    recipient = argv.to;
+  }
 }
 
 function setFishPrice(price, pk, to) {
