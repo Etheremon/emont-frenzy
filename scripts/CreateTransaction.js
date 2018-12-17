@@ -1,20 +1,3 @@
-/*
- This file is part of kaya.
-  Copyright (c) 2018 - present Zilliqa Research Pvt. Ltd.
-
-  kaya is free software: you can redistribute it and/or modify it under the
-  terms of the GNU General Public License as published by the Free Software
-  Foundation, either version 3 of the License, or (at your option) any later
-  version.
-
-  kaya is distributed in the hope that it will be useful, but WITHOUT ANY
-  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License along with
-  kaya.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
 require("isomorphic-fetch");
 const BN = require("bn.js");
 const { Zilliqa } = require("zilliqa-js");
@@ -26,14 +9,14 @@ const zilliqa = new Zilliqa({
   nodeUrl: url,
 });
 
-const makeTxnDetails = (nonceVal) => {
+const makeTxnDetails = (nonceVal, msg) => {
     txnDetails = {
         version: 0,
         nonce: nonceVal,
         to: recipient,
         amount: new BN(0),
         gasPrice: 1,
-        gasLimit: 2000,
+        gasLimit: 50000,
         data: JSON.stringify(msg).replace(/\\"/g, '"'),
     };
     return txnDetails;
@@ -50,6 +33,31 @@ const getNonceAsync = addr => {
     });
   });
 };
+
+
+/*
+*   Main Logic
+*/
+
+function sendZilliqaTransaction(senderAddr, msg, privateKey) {
+// Get user's nonce and increment it by one before sending transaction
+  getNonceAsync(senderAddr)
+    .then(nonce => {
+      console.log(`User's current nonce: ${nonce}`);
+      const nonceVal = nonce + 1;
+      console.log(`Payload's Nonce is ${nonceVal}`);
+      const xnDetails = makeTxnDetails(nonceVal, msg);
+      const txn = zilliqa.util.createTransactionJson(privateKey, txnDetails);
+      zilliqa.node.createTransaction(txn, (err, data) => {
+          if (err || data.error) {
+            console.log(err);
+          } else {
+            console.log(data);
+          }
+        });
+    })
+    .catch(err => console.log(err));
+}
 
 let privateKey;
 let recipient;
@@ -77,40 +85,114 @@ if (argv.test) {
 }
 
 const senderAddr = zilliqa.util.getAddressFromPrivateKey(privateKey);
-console.log(senderAddr);
 
-const msg = {
-  _tag: "setFishPrice",
-  _amount: "0",
-  _sender: `0x${senderAddr}`,
-  params: [
-    {
-      vname: "new_fish_price",
-      type: "Uint128",
-      value: "18",
-    },
-  ],
-};
+function setFishPrice(price) {
+  const msg = {
+    _tag: "setFishPrice",
+    _amount: "0",
+    _sender: `0x${senderAddr}`,
+    params: [
+      {
+        vname: "new_fish_price",
+        type: "Uint128",
+        value: JSON.stringify(price),
+      },
+    ],
+  };
 
+  sendZilliqaTransaction(senderAddr, msg, privateKey);
+}
 
-/*
-*   Main Logic
-*/
+function setOceanSize(oceanSize) {
+  const msg = {
+    _tag: "setOceanSize",
+    _amount: "0",
+    _sender: `0x${senderAddr}`,
+    params: [
+      {
+        vname: "new_ocean_size",
+        type: "Uint128",
+        value: JSON.stringify(oceanSize),
+      },
+    ],
+  };
 
-// Get user's nonce and increment it by one before sending transaction
-getNonceAsync(senderAddr)
-  .then(nonce => {
-    console.log(`User's current nonce: ${nonce}`);
-    const nonceVal = nonce + 1;
-    console.log(`Payload's Nonce is ${nonceVal}`);
-    const xnDetails = makeTxnDetails(nonceVal);
-    const txn = zilliqa.util.createTransactionJson(privateKey, txnDetails);
-    zilliqa.node.createTransaction(txn, (err, data) => {
-        if (err || data.error) {
-          console.log(err);
-        } else {
-          console.log(data);
-        }
-      });
-  })
-  .catch(err => console.log(err));
+  sendZilliqaTransaction(senderAddr, msg, privateKey);
+}
+
+let RANDOM_SEED = 1011;
+
+function setBait(random_seed, bait_size) { // TODO: remove random_seed because BHash is unavailable
+  const msg = {
+    _tag: "setBait",
+    _amount: "0",
+    _sender: `0x${senderAddr}`,
+    params: [
+      {
+        vname: "seed",
+        type: "Uint128",
+        value: JSON.stringify(random_seed),
+      },
+      {
+        vname: "bait_size",
+        type: "Uint128",
+        value: JSON.stringify(bait_size),
+      },
+    ],
+  };
+
+  sendZilliqaTransaction(senderAddr, msg, privateKey);
+}
+
+function buyFish(random_seed, fish_price) { // TODO: remove random_seed because BHash is unavailable
+  const msg = {
+    _tag: "setBait",
+    _amount: JSON.stringify(fish_price),
+    _sender: `0x${senderAddr}`,
+    params: [
+      {
+        vname: "seed",
+        type: "Uint128",
+        value: JSON.stringify(random_seed),
+      }
+    ],
+  };
+
+  sendZilliqaTransaction(senderAddr, msg, privateKey);
+}
+
+function moveFish(new_fish_x, new_fish_y, random_seed) { // TODO: remove random_seed because BHash is unavailable
+  const msg = {
+    _tag: "setBait",
+    _amount: JSON.stringify(fish_price),
+    _sender: `0x${senderAddr}`,
+    params: [
+      {
+        vname: "seed",
+        type: "Uint128",
+        value: JSON.stringify(random_seed),
+      },
+      {
+        vname: "new_fish_x",
+        type: "Uint128",
+        value: JSON.stringify(new_fish_x),
+      },
+      {
+        vname: "new_fish_y",
+        type: "Uint128",
+        value: JSON.stringify(new_fish_y),
+      },
+    ],
+  };
+
+  sendZilliqaTransaction(senderAddr, msg, privateKey);
+}
+
+function getRandom() {
+  return Math.floor(Math.random() * 1000);
+}
+
+// Example call
+// setFishPrice(25);
+setBait(getRandom(), 10);
+
