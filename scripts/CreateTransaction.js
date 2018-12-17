@@ -87,6 +87,7 @@ if (argv.test) {
 }
 
 function setFishPrice(price, pk, to) {
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
   const msg = {
     _tag: "setFishPrice",
     _amount: "0",
@@ -99,12 +100,12 @@ function setFishPrice(price, pk, to) {
       },
     ],
   };
-  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
   sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
 function setOceanSize(oceanSize, pk, to) {
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
   const msg = {
     _tag: "setOceanSize",
     _amount: "0",
@@ -117,7 +118,6 @@ function setOceanSize(oceanSize, pk, to) {
       },
     ],
   };
-  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
   sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
@@ -125,6 +125,7 @@ function setOceanSize(oceanSize, pk, to) {
 let RANDOM_SEED = 1011;
 
 function setBait(random_seed, bait_size, pk, to) { // TODO: remove random_seed because BHash is unavailable
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
   const msg = {
     _tag: "setBait",
     _amount: "0",
@@ -142,12 +143,12 @@ function setBait(random_seed, bait_size, pk, to) { // TODO: remove random_seed b
       },
     ],
   };
-  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
   sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
 function buyFish(random_seed, fish_price, pk, to) { // TODO: remove random_seed because BHash is unavailable
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
   const msg = {
     _tag: "setBait",
     _amount: JSON.stringify(fish_price),
@@ -160,12 +161,12 @@ function buyFish(random_seed, fish_price, pk, to) { // TODO: remove random_seed 
       }
     ],
   };
-  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
   sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
 
-function moveFish(new_fish_x, new_fish_y, random_seed, pk, to) { // TODO: remove random_seed because BHash is unavailable
+function moveFish(new_fish_x, new_fish_y, random_seed, pk, to) { // TODO: remove random_seed because BHash is
+  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);unavailable
   const msg = {
     _tag: "setBait",
     _amount: JSON.stringify(fish_price),
@@ -188,7 +189,6 @@ function moveFish(new_fish_x, new_fish_y, random_seed, pk, to) { // TODO: remove
       },
     ],
   };
-  const senderAddr = zilliqa.util.getAddressFromPrivateKey(pk);
 
   sendZilliqaTransaction(senderAddr, msg, pk, to);
 }
