@@ -40,13 +40,15 @@ const getNonceAsync = addr => {
 */
 
 function sendZilliqaTransaction(senderAddr, msg, privateKey, toAddr) {
+
+  console.log("to addr: ", toAddr);
 // Get user's nonce and increment it by one before sending transaction
   getNonceAsync(senderAddr)
     .then(nonce => {
       console.log(`User's current nonce: ${nonce}`);
       const nonceVal = nonce + 1;
       console.log(`Payload's Nonce is ${nonceVal}`);
-      const xnDetails = makeTxnDetails(nonceVal, msg, toAddr);
+      const txnDetails = makeTxnDetails(nonceVal, msg, toAddr);
       const txn = zilliqa.util.createTransactionJson(privateKey, txnDetails);
       zilliqa.node.createTransaction(txn, (err, data) => {
           if (err || data.error) {
