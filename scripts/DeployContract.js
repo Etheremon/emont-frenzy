@@ -16,21 +16,20 @@
 */
 
 require("isomorphic-fetch");
-const { Zilliqa } = require("zilliqa-js");
+const { Zilliqa } = require("@zilliqa-js/zilliqa");
+const CP = require ('@zilliqa-js/crypto');
 const fs = require("fs");
 const { argv } = require("yargs");
-const BN = require("bn.js");
+const { BN, Long, bytes, units } = require('@zilliqa-js/util');
 
 const url = "http://localhost:4200";
-const zilliqa = new Zilliqa({
-  nodeUrl: url,
-});
+const zilliqa = new Zilliqa(url);
 
-const getNonceAsync = addr => {
+const getNonceAsync = (addr) => {
   return new Promise((resolve, reject) => {
-    zilliqa.node.getBalance({ address: addr }, (err, data) => {
-      if (err || data.error) {
-        reject(err);
+    zilliqa.blockchain.getBalance(addr).then((data) => {
+      if (data.error) {
+        reject(data.error);
       } else {
         resolve(data.result.nonce);
       }
@@ -57,11 +56,11 @@ if (argv.test) {
 
 console.log("Zilliqa Testing Script");
 console.log(`Connected to ${url}`);
-const address = zilliqa.util.getAddressFromPrivateKey(privateKey);
-const node = zilliqa.getNode();
+const address = CP.getAddressFromPrivateKey(privateKey);
+zilliqa.wallet.addByPrivateKey(privateKey);
 
 getNonceAsync(address)
-  .then(currentNonce => {
+  .then((currentNonce) => {
     nonceVal = currentNonce + 1;
 
     console.log(`Address: ${address} User's current nonce: ${currentNonce}`);
@@ -72,6 +71,11 @@ getNonceAsync(address)
     const codeStr = fs.readFileSync("../contract/frenzy.scillia", "utf-8");
     // the immutable initialisation variables
     const initParams = [
+      {
+        vname: "_scilla_version",
+        type: "Uint32",
+        value: "0"
+      },
       {
         vname: "owner",
         type: "ByStr20",
@@ -84,28 +88,25 @@ getNonceAsync(address)
       },
     ];
 
-    // transaction details
-    const txnDetails = {
-      version: 0,
-      nonce: nonceVal,
-      to: "0000000000000000000000000000000000000000",
-      amount: new BN(0),
-      gasPrice: 1,
-      gasLimit: 2000,
-      code: codeStr,
-      data: JSON.stringify(initParams).replace(/\\' /g, '"'),
-    };
+    // Instance of class Contract
+    const contract = zilliqa.contracts.new(codeStr, initParams);
 
-    // sign the transaction using util methods
-    const txn = zilliqa.util.createTransactionJson(privateKey, txnDetails);
+    contract.deploy({
+        version: 0,
+        gasPrice: units.toQa('1000', units.Units.Li),
+        gasLimit: Long.fromNumber(10000)
+    }).then((data) => {
+        if (data.error) {
+            console.log("error", data.error);
+        } else {
+            const [deployTxn, contractInstance] = data;
+            console.log(`Deployment Transaction ID: ${deployTxn.id}`);
+            console.log(`Deployment Transaction Receipt:`, deployTxn.txParams.receipt);
+            console.log(`The contract address is: ${contractInstance.address}`);
+        }
+   });
 
-    // send the transaction to the node
-    node.createTransaction(txn, (err, data) => {
-      if (err || data.error) {
-        console.log(err);
-      } else {
-        console.log(data);
-      }
-    });
   })
-  .catch(err => console.log(err));
+  .catch(err => {
+      console.log(err);
+  });
